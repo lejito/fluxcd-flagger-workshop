@@ -29,7 +29,7 @@
 
 ```shell
 export GITHUB_USER=<your-github-username>
-sed -i "s/adgrajales1/$GITHUB_USER/g" ./clusters/minikube/flux-system/gotk-sync.yaml
+sed -i "s/angrajales/$GITHUB_USER/g" ./clusters/minikube/flux-system/gotk-sync.yaml
 git add -A
 git commit -m "Change github user"
 git push
