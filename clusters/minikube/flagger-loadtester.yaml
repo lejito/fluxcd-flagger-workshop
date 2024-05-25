@@ -1,0 +1,18 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: flagger-loadtester
+  namespace: flux-system
+spec:
+  interval: 6h0m0s
+  dependsOn:
+    - name: configuration
+  path: ./tester
+  prune: true
+  sourceRef:
+    kind: OCIRepository
+    name: flagger-loadtester
+  targetNamespace: dev
+  timeout: 2m0s
+  wait: true

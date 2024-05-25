@@ -1,0 +1,44 @@
+---
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: podinfo
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: podinfo
+  progressDeadlineSeconds: 60
+  service:
+    port: 80
+    targetPort: 9898 # make sure this matches container port
+    portDiscovery: true
+    hosts:
+      - "*"
+    gateways:
+      - gateway
+  analysis:
+    interval: 1m
+    threshold: 10
+    maxWeight: 20
+    stepWeight: 10
+    metrics:
+      - name: "404s percentage"
+        templateRef:
+          name: not-found-percentage
+        thresholdRange:
+          max: 5
+        interval: 1m
+    webhooks:
+      - name: acceptance-test
+        type: pre-rollout
+        url: http://flagger-loadtester.dev.svc.cluster.local
+        timeout: 60s
+        metadata:
+          type: bash
+          cmd: "curl -s http://podinfo.dev.svc.cluster.local"
+      - name: load-test
+        url: http://flagger-loadtester.dev.svc.cluster.local
+        timeout: 5s
+        metadata:
+          cmd: "hey -z 1m -q 10 -c 2 http://podinfo.dev.svc.cluster.local"
