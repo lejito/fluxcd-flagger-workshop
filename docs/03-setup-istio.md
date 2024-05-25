@@ -44,11 +44,20 @@ kubectl port-forward -n dev svc/istio-ingressgateway 8080:80 # For dev
 kubectl port-forward -n qa svc/istio-ingressgateway 8081:80 # For qa
 ```
 
-## Step 7: Access the application
+
+## Step 7. Reconcile the kustomization
+
+```shell
+flux reconcile kustomization apps-dev -n flux-system --with-source
+flux reconcile kustomization apps-qa -n flux-system --with-source
+```
+
+## Step 8: Access the application
 
 Open your web browser and navigate to [http://app.sample.com:8080](http://app.sample.com:8080)
 or [http://app-qa.sample.com:8080](http://app-qa.sample.com:8080).
 *Note: You may need to wait a few minutes for the application to be accessible.*
+
 
 ## Add prometheus
 ```shell
